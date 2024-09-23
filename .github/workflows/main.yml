@@ -19,12 +19,13 @@ jobs:
 
       # Step 3: Download and install Cloud Foundry CLI
       - name: Install Cloud Foundry CLI
-        run: |
-          wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | sudo apt-key add -
+        run: wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | sudo apt-key add -
           echo "deb https://packages.cloudfoundry.org/debian stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
-      # Step 4: Verify installation
+      # Step 4: install
       - name: install cf8
-        run: sudo apt-get install cf8-cli
+        run: |
+          sudo apt-get update
+          sudo apt-get install cf8-cli
       # Step 5: Verify installation
       - name: Print CF CLI version
         run: cf --version
