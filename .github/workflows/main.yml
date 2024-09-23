@@ -1,0 +1,33 @@
+name: Install Cloud Foundry CLI
+
+# Trigger this workflow manually via workflow_dispatch
+on:
+  workflow_dispatch:
+
+jobs:
+  install-cf-cli:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Update package lists with retries
+      - name: Update package lists
+        run: |
+          for i in {1..5}; do
+            sudo apt-get update && break || sleep 15;
+          done
+
+      # Step 2: Install prerequisites
+      - name: Install wget
+        run: |
+          sudo apt-get install -y wget || sudo apt-get install -y --fix-missing wget
+
+      # Step 3: Download and install Cloud Foundry CLI
+      - name: Install Cloud Foundry CLI
+        run: |
+          wget -q -O cf-cli.deb "https://packages.cloudfoundry.org/stable?release=debian64&source=github"
+          sudo dpkg -i cf-cli.deb || { echo "CF CLI installation failed"; exit 1; }
+          sudo apt-get install -y -f  # Fix dependencies if necessary
+
+      # Step 4: Verify installation
+      - name: Print CF CLI version
+        run: cf --version
